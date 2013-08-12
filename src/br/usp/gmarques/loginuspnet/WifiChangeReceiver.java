@@ -65,7 +65,8 @@ public class WifiChangeReceiver extends BroadcastReceiver {
 
 				WifiManager wifiManager = (WifiManager) context.getSystemService(Context.WIFI_SERVICE);
 				WifiInfo wifiInfo = wifiManager.getConnectionInfo();
-				if (wifiInfo.getSSID().toUpperCase().contains("USP")) {
+				if (wifiInfo.getSSID().toUpperCase().contains("USP")
+					|| wifiInfo.getSSID().toUpperCase().contains("HCRP")) {
 					Log.d("LoginUSPNet", "Rede USPNet detectada.");
 					new loginThread().execute("USP");
 				} else if (wifiInfo.getSSID().toUpperCase().contains("ICMC")) {
