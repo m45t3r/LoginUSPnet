@@ -48,30 +48,41 @@ import br.usp.gmarques.loginuspnet.http.HttpUtils;
 
 public class WifiChangeReceiver extends BroadcastReceiver {
 
+	private static final String TAG = WifiChangeReceiver.class.getSimpleName();
+
 	Context context = null;
-	
+
 	@Override
 	public void onReceive(Context context, Intent intent) {
 		final String action = intent.getAction();
 		this.context = context;
-		
-		Log.v("LoginUSPNet", "Action: " + action);
+
+		Log.v(TAG, "Action: " + action);
 
 		if (action.equals(WifiManager.NETWORK_STATE_CHANGED_ACTION)) {
 			NetworkInfo info = (NetworkInfo) intent
 					.getParcelableExtra(WifiManager.EXTRA_NETWORK_INFO);
 			if (info.getDetailedState() == DetailedState.CONNECTED) {
-				Log.v("LoginUSPNet", "Conectado");
+				Log.v(TAG, "Connected");
 
-				WifiManager wifiManager = (WifiManager) context.getSystemService(Context.WIFI_SERVICE);
+				WifiManager wifiManager = (WifiManager) context
+						.getSystemService(Context.WIFI_SERVICE);
 				WifiInfo wifiInfo = wifiManager.getConnectionInfo();
-				if (wifiInfo.getSSID().toUpperCase().contains("USP")
-					|| wifiInfo.getSSID().toUpperCase().contains("HCRP")) {
-					Log.d("LoginUSPNet", "Rede USPNet detectada.");
-					new loginThread().execute("USP");
+
+				String result = null;
+				if (wifiInfo.getSSID().toUpperCase().contains("USP")) {
+					result = "USP";
+				} else if (wifiInfo.getSSID().toUpperCase().contains("HCRP")) {
+					result = "USP";
 				} else if (wifiInfo.getSSID().toUpperCase().contains("ICMC")) {
-					Log.d("LoginUSPNet", "Rede ICMC detectada.");
-					new loginThread().execute("ICMC");					
+					result = "ICMC";
+				}
+
+				if (result != null) {
+					Log.d(TAG, result + " network detected.");
+					new loginThread().execute(result);
+				} else {
+					Log.d(TAG, "No known network detected.");
 				}
 			}
 
@@ -79,7 +90,8 @@ public class WifiChangeReceiver extends BroadcastReceiver {
 	}
 
 	/**
-	 * Envia um POST para a pagina passada no httpsURL com os argumentos passados em nvps
+	 * Send a POST request to httpURL with arguments passed to nvps
+	 * 
 	 * @param httpsURL
 	 * @param nvps
 	 * @throws ClientProtocolException
@@ -91,16 +103,16 @@ public class WifiChangeReceiver extends BroadcastReceiver {
 		HttpClient client = HttpUtils.getNewHttpClient();
 		HttpPost httppost = new HttpPost(httpsURL);
 
-		// Bloco de autenticacao
+		// Authentication block
 		UrlEncodedFormEntity p_entity;
 
 		p_entity = new UrlEncodedFormEntity(nvps, HTTP.UTF_8);
 		httppost.setEntity(p_entity);
-		// Enviando a requisicao e recebendo a resposta
+		// Send request and get response
 		HttpResponse response = client.execute(httppost);
 		HttpEntity responseEntity = response.getEntity();
 
-		// Tratando a resposta
+		// Processing response
 		InputSource inputSource = new InputSource(responseEntity.getContent());
 		BufferedReader in = new BufferedReader(new InputStreamReader(
 				inputSource.getByteStream()));
@@ -108,55 +120,60 @@ public class WifiChangeReceiver extends BroadcastReceiver {
 		@SuppressWarnings("unused")
 		String inputLine;
 		while ((inputLine = in.readLine()) != null) {
-			// Recebe a pagina de retorno. Pode ser usado para verificar se
-			// obteve sucesso na autenticaco
-			// Log.d("LoginUSPNet:", " " + inputLine);
+			// Checking response page, can be used to verify authentication
+			// success
+			// Log.d(TAG, inputLine + "");
 		}
 	}
-	
+
 	/**
+	 * Get USPNet's login page by trying to access a page without authentication
 	 * 
-	 * @return A URL para fazer login
+	 * @return USPNet's login page
 	 */
-	private String findPostURL(){
-		
-		String path = "http://www.usp.br"; //Pagina aleatoria para verificar o redirecionamento
-    	String resultPage;
-    	String resultURL = "";
-    	URL url;
-    	URLConnection con;
-    	final char[] buffer;
-    	StringBuilder out;
-    	Reader in;
-    	int urlIndex;
-    	
-    	try {
+	private String findPostURL() {
+
+		// Any page to check redirect
+		final String path = "http://www.usp.br";
+		String resultPage;
+		String resultURL = "";
+		URL url;
+		URLConnection con;
+		final char[] buffer;
+		StringBuilder out;
+		Reader in;
+		int urlIndex;
+
+		try {
 			url = new URL(path);
 			con = url.openConnection();
 			trustAllCertificates();
-			
-			//Tenta conectar em alguma pagina e guarda o retorno em uma string.
-			//Se a pagina de retorno for uma pagina de login da USPNet procura a url do POST
-			
+
+			// Tries to connect to a page and store return on String.
+			// If this is the USPNet's login page store it's URL
+
 			buffer = new char[0x10000];
 			out = new StringBuilder();
-			in = new InputStreamReader(openConnectionCheckRedirects(con), "UTF-8");
+			in = new InputStreamReader(openConnectionCheckRedirects(con),
+					"UTF-8");
 			int read;
+
 			do {
-			  read = in.read(buffer, 0, buffer.length);
-			  if (read>0) {
-			    out.append(buffer, 0, read);
-			  }
-			} while (read>=0);
+				read = in.read(buffer, 0, buffer.length);
+				if (read > 0) {
+					out.append(buffer, 0, read);
+				}
+			} while (read >= 0);
 			resultPage = out.toString();
-			
+
 			urlIndex = resultPage.toUpperCase().lastIndexOf("ACTION=\"");
-			if(urlIndex != -1){
+			if (urlIndex != -1) {
 				urlIndex += 8;
-				for(;urlIndex < resultPage.length() && resultPage.charAt(urlIndex) != '"'; urlIndex++){
+				for (; urlIndex < resultPage.length()
+						&& resultPage.charAt(urlIndex) != '"'; urlIndex++) {
 					resultURL += resultPage.charAt(urlIndex);
 				}
-			}else{
+			} else {
 				resultURL = "";
 			}
 		} catch (MalformedURLException e) {
@@ -170,83 +187,84 @@ public class WifiChangeReceiver extends BroadcastReceiver {
 		} catch (NoSuchAlgorithmException e) {
 			Log.e("NoSuchAlgorithmException", "Message: " + e.getMessage());
 		}
-    	Log.d("LoginUSPNet", "URL: " + resultURL);
+		Log.d(TAG, "USPNet's login URL: " + resultURL);
 		return resultURL;
 	}
 
 	/**
-	 * Abre uma conexão e aceita redirecionar http para https
-	 * Usado para obter a pagina de login da uspnet
+	 * Open connection and accept http to https redirection Used to get USPNet's
+	 * login page
+	 * 
 	 * @param c
 	 * @return
 	 * @throws IOException
 	 */
-	private InputStream openConnectionCheckRedirects(URLConnection c) throws IOException 
-	{
-	   boolean redir;
-	   int redirects = 0;
-	   InputStream in = null;
-	   do 
-	   {
-	      if (c instanceof HttpURLConnection) 
-	      {
-	         ((HttpURLConnection) c).setInstanceFollowRedirects(false);
-	      }
-	      // We want to open the input stream before getting headers
-	      // because getHeaderField() et al swallow IOExceptions.
-	      in = c.getInputStream(); 
-	      redir = false; 
-	      if (c instanceof HttpURLConnection) 
-	      {
-	         HttpURLConnection http = (HttpURLConnection) c;
-	         int stat = http.getResponseCode();
-	         if (stat >= 300 && stat <= 307 && stat != 306 &&
-	            stat != HttpURLConnection.HTTP_NOT_MODIFIED) 
-	         {
-	            URL base = http.getURL();
-	            String loc = http.getHeaderField("Location");
-	            URL target = null;
-	            if (loc != null) 
-	            {
-	               target = new URL(base, loc);
-	            }
-	            http.disconnect();
-	            // Redirection should be allowed only for HTTP and HTTPS
-	            // and should be limited to 5 redirections at most.
-	            if (target == null || !(target.getProtocol().equals("http")
-	               || target.getProtocol().equals("https"))
-	               || redirects >= 5)
-	            {
-	               throw new SecurityException("illegal URL redirect");
-	            }
-	            redir = true;
-	            c = target.openConnection();
-	            redirects++;
-	         }
-	      }
-	   } 
-	   while (redir);
-	   return in;
+	private InputStream openConnectionCheckRedirects(URLConnection c)
+			throws IOException {
+		boolean redir;
+		int redirects = 0;
+		InputStream in = null;
+
+		do {
+			if (c instanceof HttpURLConnection) {
+				((HttpURLConnection) c).setInstanceFollowRedirects(false);
+			}
+			// We want to open the input stream before getting headers
+			// because getHeaderField() et al swallow IOExceptions.
+			in = c.getInputStream();
+			redir = false;
+			if (c instanceof HttpURLConnection) {
+				HttpURLConnection http = (HttpURLConnection) c;
+				int stat = http.getResponseCode();
+				if (stat >= 300 && stat <= 307 && stat != 306
+						&& stat != HttpURLConnection.HTTP_NOT_MODIFIED) {
+					URL base = http.getURL();
+					String loc = http.getHeaderField("Location");
+					URL target = null;
+					if (loc != null) {
+						target = new URL(base, loc);
+					}
+					http.disconnect();
+					// Redirection should be allowed only for HTTP and HTTPS
+					// and should be limited to 5 redirections at most.
+					if (target == null
+							|| !(target.getProtocol().equals("http") || target
+									.getProtocol().equals("https"))
+							|| redirects >= 5) {
+						throw new SecurityException("illegal URL redirect");
+					}
+					redir = true;
+					c = target.openConnection();
+					redirects++;
+				}
+			}
+		} while (redir);
+
+		return in;
 	}
 
 	/**
-	 * Desabilita a checagem de certificado para conexoes ssl.
-	 * A pagina da uspnet não tem um certificado valido.
+	 * Disable SSL checks USPNet's page doesn't have a valid certificate
+	 * 
 	 * @throws NoSuchAlgorithmException
 	 * @throws KeyManagementException
 	 */
-	private void trustAllCertificates() throws NoSuchAlgorithmException, KeyManagementException{
+	private void trustAllCertificates() throws NoSuchAlgorithmException,
+			KeyManagementException {
 		// Create a trust manager that does not validate certificate chains
-		TrustManager[] trustAllCerts = new TrustManager[] {new X509TrustManager() {
-				public java.security.cert.X509Certificate[] getAcceptedIssuers() {
-					return null;
-				}
-				public void checkClientTrusted(X509Certificate[] certs, String authType) {
-				}
-				public void checkServerTrusted(X509Certificate[] certs, String authType) {
-				}
+		TrustManager[] trustAllCerts = new TrustManager[] { new X509TrustManager() {
+			public java.security.cert.X509Certificate[] getAcceptedIssuers() {
+				return null;
 			}
-		};
+
+			public void checkClientTrusted(X509Certificate[] certs,
+					String authType) {
+			}
+
+			public void checkServerTrusted(X509Certificate[] certs,
+					String authType) {
+			}
+		} };
 
 		// Install the all-trusting trust manager
 		SSLContext sc = SSLContext.getInstance("SSL");
@@ -265,42 +283,47 @@ public class WifiChangeReceiver extends BroadcastReceiver {
 	}
 
 	/**
-	 * Faz o login em uma thread separada para nao bloquear a thread principal com conexao de rede.
-	 * @author Giovanni
-	 *
+	 * Do login on a separate thread to not block main thread
 	 */
 	private class loginThread extends AsyncTask<String, Void, Void> {
 
+		@Override
 		protected Void doInBackground(String... id) {
-			SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(context);
+			SharedPreferences preferences = PreferenceManager
+					.getDefaultSharedPreferences(context);
 			final List<BasicNameValuePair> nvps = new ArrayList<BasicNameValuePair>();
-			
-			if(id[0].toUpperCase().equals("USP")){
 
-				String httpsURL = "";
-				//Procura a URL de login na pagina e envia os dados.
-				//Deve funcionar em todos os campi da usp.
-				
-				httpsURL = findPostURL();
+			if (id[0].toUpperCase().equals("USP")) {
 
-				if(!httpsURL.equals("")){
-					nvps.add(new BasicNameValuePair("redirurl",	"https://www.google.com"));
-					nvps.add(new BasicNameValuePair("auth_user", preferences.getString(context.getString(R.string.pref_username),"")));
-					nvps.add(new BasicNameValuePair("auth_pass", preferences.getString(context.getString(R.string.pref_password),"")));
+				String httpsURL = findPostURL();
+
+				if (!httpsURL.equals("")) {
+					nvps.add(new BasicNameValuePair("redirurl",
+							"https://www.google.com")
+					);
+					nvps.add(new BasicNameValuePair("auth_user", preferences.getString(
+							context.getString(R.string.pref_username), ""))
+					);
+					nvps.add(new BasicNameValuePair("auth_pass", preferences.getString(
+									context.getString(R.string.pref_password), ""))
+					);
 					nvps.add(new BasicNameValuePair("accept", "Continue"));
-	
+
 					try {
 						sendRequest(httpsURL, nvps);
 					} catch (ClientProtocolException e) {
-						Log.e("LoginUSPNet", "ClientProtocolException while connecting to " + id[0] + " Message: "+ e.getMessage());
-						Log.e("LoginUSPNet", " " + Log.getStackTraceString(e));
+						Log.e(TAG,
+								"ClientProtocolException while connecting to "
+										+ id[0] + " Message: " + e.getMessage());
+						Log.e(TAG, Log.getStackTraceString(e));
 					} catch (IOException e) {
-						Log.e("LoginUSPNet", "IOException while connecting to " + id[0] + " Message: "+ e.getMessage());
-						Log.e("LoginUSPNet", " " + Log.getStackTraceString(e));
+						Log.e(TAG, "IOException while connecting to "
+								+ id[0] + " Message: " + e.getMessage());
+						Log.e(TAG, Log.getStackTraceString(e));
 					}
 				}
 
-			} else if(id[0].toUpperCase().equals("ICMC")){
+			} else if (id[0].toUpperCase().equals("ICMC")) {
 				final String httpsURL = "https://1.1.1.1/login.html?redirect=https://www.google.com";
 
 				nvps.add(new BasicNameValuePair("buttonClicked", "4"));
@@ -308,22 +331,30 @@ public class WifiChangeReceiver extends BroadcastReceiver {
 				nvps.add(new BasicNameValuePair("err_msg", ""));
 				nvps.add(new BasicNameValuePair("info_flag", "0"));
 				nvps.add(new BasicNameValuePair("info_msg", ""));
-				nvps.add(new BasicNameValuePair("redirect_url",	"https://www.google.com"));
-				nvps.add(new BasicNameValuePair("username", preferences.getString(context.getString(R.string.pref_username),"")));
-				nvps.add(new BasicNameValuePair("password", preferences.getString(context.getString(R.string.pref_password),"")));
+				nvps.add(new BasicNameValuePair("redirect_url",
+						"https://www.google.com"));
+				nvps.add(new BasicNameValuePair("username", preferences
+						.getString(context.getString(R.string.pref_username),
+								"")));
+				nvps.add(new BasicNameValuePair("password", preferences
+						.getString(context.getString(R.string.pref_password),
+								"")));
 
 				try {
 					sendRequest(httpsURL, nvps);
 				} catch (ClientProtocolException e) {
-					Log.e("LoginUSPNet", "ClientProtocolException while connecting to " + id[0] + " Message: "+ e.getMessage());
-					Log.e("LoginUSPNet", " " + Log.getStackTraceString(e));
+					Log.e(TAG,
+							"ClientProtocolException while connecting to "
+									+ id[0] + " Message: " + e.getMessage());
+					Log.e(TAG, " " + Log.getStackTraceString(e));
 				} catch (IOException e) {
-					Log.e("LoginUSPNet", "IOException while connecting to " + id[0] + " Message: "+ e.getMessage());
-					Log.e("LoginUSPNet", " " + Log.getStackTraceString(e));
+					Log.e(TAG, "IOException while connecting to "
+							+ id[0] + " Message: " + e.getMessage());
+					Log.e(TAG, " " + Log.getStackTraceString(e));
 				}
-				
+
 			}
-			
+
 			return null;
 		}
 	}
