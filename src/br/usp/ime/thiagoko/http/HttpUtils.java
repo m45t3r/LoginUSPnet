@@ -1,4 +1,4 @@
-package br.usp.gmarques.loginuspnet.http;
+package br.usp.ime.thiagoko.http;
 
 import java.security.KeyStore;
 

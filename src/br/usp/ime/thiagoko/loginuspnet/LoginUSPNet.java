@@ -1,4 +1,4 @@
-package br.usp.gmarques.loginuspnet;
+package br.usp.ime.thiagoko.loginuspnet;
 
 import android.content.SharedPreferences;
 import android.content.SharedPreferences.OnSharedPreferenceChangeListener;

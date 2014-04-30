@@ -1,13 +1,10 @@
-package br.usp.gmarques.loginuspnet;
+package br.usp.ime.thiagoko.loginuspnet;
 
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
-import java.io.Reader;
 import java.net.HttpURLConnection;
-import java.net.MalformedURLException;
-import java.net.SocketTimeoutException;
 import java.net.URL;
 import java.net.URLConnection;
 import java.security.KeyManagementException;
@@ -44,8 +41,7 @@ import android.net.wifi.WifiManager;
 import android.os.AsyncTask;
 import android.preference.PreferenceManager;
 import android.util.Log;
-import android.widget.Toast;
-import br.usp.gmarques.loginuspnet.http.HttpUtils;
+import br.usp.ime.thiagoko.http.HttpUtils;
 
 public class WifiChangeReceiver extends BroadcastReceiver {
 
@@ -131,7 +127,7 @@ public class WifiChangeReceiver extends BroadcastReceiver {
 	}
 
 	/**
-	 * Open connection and accept http to https redirection Used to get USPNet's
+	 * Open connection and accept http to https redirection Used to get USPnet's
 	 * login page
 	 * 
 	 * @param c
@@ -183,7 +179,7 @@ public class WifiChangeReceiver extends BroadcastReceiver {
 	}
 
 	/**
-	 * Disable SSL checks USPNet's page doesn't have a valid certificate
+	 * Disable SSL checks USPnet's page doesn't have a valid certificate
 	 * 
 	 * @throws NoSuchAlgorithmException
 	 * @throws KeyManagementException

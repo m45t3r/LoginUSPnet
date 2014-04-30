@@ -1,4 +1,4 @@
-package br.usp.gmarques.loginuspnet;
+package br.usp.ime.thiagoko.loginuspnet;
 
 import java.util.HashSet;
 import java.util.Iterator;
