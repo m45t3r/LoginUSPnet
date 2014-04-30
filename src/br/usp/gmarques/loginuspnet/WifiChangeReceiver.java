@@ -44,6 +44,7 @@ import android.net.wifi.WifiManager;
 import android.os.AsyncTask;
 import android.preference.PreferenceManager;
 import android.util.Log;
+import android.widget.Toast;
 import br.usp.gmarques.loginuspnet.http.HttpUtils;
 
 public class WifiChangeReceiver extends BroadcastReceiver {
@@ -97,7 +98,7 @@ public class WifiChangeReceiver extends BroadcastReceiver {
 	 * @throws ClientProtocolException
 	 * @throws IOException
 	 */
-	private void sendRequest(String httpsURL, List<BasicNameValuePair> nvps)
+	private void sendRequest(String httpsURL, List<BasicNameValuePair> nvps, String redirURL)
 			throws ClientProtocolException, IOException {
 
 		HttpClient client = HttpUtils.getNewHttpClient();
@@ -122,7 +123,10 @@ public class WifiChangeReceiver extends BroadcastReceiver {
 		while ((inputLine = in.readLine()) != null) {
 			// Checking response page, can be used to verify authentication
 			// success
-			// Log.d(TAG, inputLine + "");
+			if(inputLine.toLowerCase().contains(redirURL.toLowerCase())) {
+				Log.d(TAG, "Connection successful!");
+				break;
+			}
 		}
 	}
 
@@ -134,7 +138,7 @@ public class WifiChangeReceiver extends BroadcastReceiver {
 	private String findPostURL() {
 
 		// Any page to check redirect
-		final String path = "http://www.usp.br";
+		final String path = "http://ime.usp.br";
 		String resultPage;
 		String resultURL = "";
 		URL url;
@@ -292,14 +296,13 @@ public class WifiChangeReceiver extends BroadcastReceiver {
 			SharedPreferences preferences = PreferenceManager
 					.getDefaultSharedPreferences(context);
 			final List<BasicNameValuePair> nvps = new ArrayList<BasicNameValuePair>();
+			final String redirURL = "https://www.google.com";
 
 			if (id[0].toUpperCase().equals("USP")) {
-
-				String httpsURL = findPostURL();
+				final String httpsURL = "https://gwime.semfio.usp.br:8001";
 
 				if (!httpsURL.equals("")) {
-					nvps.add(new BasicNameValuePair("redirurl",
-							"https://www.google.com")
+					nvps.add(new BasicNameValuePair("redirurl", redirURL)
 					);
 					nvps.add(new BasicNameValuePair("auth_user", preferences.getString(
 							context.getString(R.string.pref_username), ""))
@@ -307,10 +310,10 @@ public class WifiChangeReceiver extends BroadcastReceiver {
 					nvps.add(new BasicNameValuePair("auth_pass", preferences.getString(
 									context.getString(R.string.pref_password), ""))
 					);
-					nvps.add(new BasicNameValuePair("accept", "Continue"));
+					nvps.add(new BasicNameValuePair("accept", "Acessar"));
 
 					try {
-						sendRequest(httpsURL, nvps);
+						sendRequest(httpsURL, nvps, redirURL);
 					} catch (ClientProtocolException e) {
 						Log.e(TAG,
 								"ClientProtocolException while connecting to "
@@ -331,8 +334,7 @@ public class WifiChangeReceiver extends BroadcastReceiver {
 				nvps.add(new BasicNameValuePair("err_msg", ""));
 				nvps.add(new BasicNameValuePair("info_flag", "0"));
 				nvps.add(new BasicNameValuePair("info_msg", ""));
-				nvps.add(new BasicNameValuePair("redirect_url",
-						"https://www.google.com"));
+				nvps.add(new BasicNameValuePair("redirect_url", redirURL));
 				nvps.add(new BasicNameValuePair("username", preferences
 						.getString(context.getString(R.string.pref_username),
 								"")));
@@ -341,7 +343,7 @@ public class WifiChangeReceiver extends BroadcastReceiver {
 								"")));
 
 				try {
-					sendRequest(httpsURL, nvps);
+					sendRequest(httpsURL, nvps, redirURL);
 				} catch (ClientProtocolException e) {
 					Log.e(TAG,
 							"ClientProtocolException while connecting to "
