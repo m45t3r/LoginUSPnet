@@ -70,7 +70,7 @@ public class WifiChangeReceiver extends BroadcastReceiver {
 				WifiInfo wifiInfo = wifiManager.getConnectionInfo();
 
 				String result = null;
-				if (wifiInfo.getSSID().toUpperCase().contains("USP")) {
+				if (wifiInfo.getSSID().toUpperCase().contains("USPNET")) {
 					result = "USP";
 				} else if (wifiInfo.getSSID().toUpperCase().contains("HCRP")) {
 					result = "USP";
