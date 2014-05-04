@@ -10,8 +10,8 @@ Another option is to connect to any USPnet network even if you never connected o
 
 ## Português ##
 
-Um app que se conecta automaticamente na rede da USPnet
+Um app que se conecta automaticamente na rede da USPnet.
 
-Salve sua informação de login no app, assim na próxima vez que você se conectar na rede da USPnet o app envia seu e-mail e senha para o servidor e assim não será necessário entrar a informação de login manualmente.
+Salve sua informação de login no app, assim na próxima vez que você se conectar na rede da USPnet o app envia seu e-mail e senha para o servidor e não será necessário entrar a informação de login manualmente.
 
 Outra opção é de conectar automaticamente na rede da USPnet mesmo que você nunca tenha entrado na rede antes.
