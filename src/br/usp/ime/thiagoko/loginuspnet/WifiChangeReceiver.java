@@ -45,6 +45,7 @@ import android.os.AsyncTask;
 import android.preference.PreferenceManager;
 import android.util.Log;
 import br.usp.ime.thiagoko.http.HttpUtils;
+import br.usp.ime.thiagoko.loginuspnet.Constants.Networks;
 
 public class WifiChangeReceiver extends BroadcastReceiver {
 
@@ -70,12 +71,12 @@ public class WifiChangeReceiver extends BroadcastReceiver {
 				WifiInfo wifiInfo = wifiManager.getConnectionInfo();
 
 				String result = null;
-				if (wifiInfo.getSSID().toUpperCase().contains("USPNET")) {
-					result = "USP";
-				} else if (wifiInfo.getSSID().toUpperCase().contains("HCRP")) {
-					result = "USP";
-				} else if (wifiInfo.getSSID().toUpperCase().contains("ICMC")) {
-					result = "ICMC";
+				if (wifiInfo.getSSID().toUpperCase().contains(Networks.USPNET)) {
+					result = Networks.USPNET;
+				} else if (wifiInfo.getSSID().toUpperCase().contains(Networks.HCRP)) {
+					result = Networks.USPNET;
+				} else if (wifiInfo.getSSID().toUpperCase().contains(Networks.ICMC)) {
+					result = Networks.ICMC;
 				}
 
 				if (result != null) {
@@ -321,7 +322,7 @@ public class WifiChangeReceiver extends BroadcastReceiver {
 			final List<BasicNameValuePair> nvps = new ArrayList<BasicNameValuePair>();
 			final String redirURL = "https://www.google.com";
 
-			if (id[0].toUpperCase().equals("USP")) {
+			if (id[0].equals(Networks.USPNET)) {
 
 				final URL httpsURL = findPostURL();
 
@@ -349,7 +350,7 @@ public class WifiChangeReceiver extends BroadcastReceiver {
 					Log.d(TAG, "Already authenticate to USPnet network");
 				}
 
-			} else if (id[0].toUpperCase().equals("ICMC")) {
+			} else if (id[0].equals(Networks.ICMC)) {
 				
 				final String httpsURL = "https://1.1.1.1/login.html?redirect=" + redirURL;
 

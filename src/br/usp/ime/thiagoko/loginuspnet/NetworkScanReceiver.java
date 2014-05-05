@@ -5,6 +5,8 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
 
+import br.usp.ime.thiagoko.loginuspnet.Constants.Networks;
+
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
@@ -18,10 +20,6 @@ import android.preference.PreferenceManager;
 import android.util.Log;
 
 public class NetworkScanReceiver extends BroadcastReceiver {
-	
-	public static final String USP_NET = "USPNET";
-	public static final String ICMC = "ICMC";
-	public static final String HCRP = "HCRP";
 	
 	private static final String TAG = NetworkScanReceiver.class.getSimpleName();
 	private static final int MIN_PERIOD_BTW_CALLS = 10 * 1000;// 10 Seconds
@@ -153,8 +151,8 @@ public class NetworkScanReceiver extends BroadcastReceiver {
 			
 			while (!found && it.hasNext()) {
 				scanResult = it.next();
-				found = scanResult.SSID.toUpperCase().contains("USPNET")
-						|| scanResult.SSID.toUpperCase().contains("ICMC");
+				found = scanResult.SSID.toUpperCase().contains(Networks.USPNET)
+						|| scanResult.SSID.toUpperCase().contains(Networks.ICMC);
 			}
 			
 			if (!found) {
@@ -190,8 +188,8 @@ public class NetworkScanReceiver extends BroadcastReceiver {
 					
 					if (wifiConfiguration.SSID == null) {
 						wm.removeNetwork(wifiConfiguration.networkId);
-					} else if (!wifiConfiguration.SSID.toUpperCase().contains("USPNET")
-							&& !wifiConfiguration.SSID.toUpperCase().contains("ICMC"))
+					} else if (!wifiConfiguration.SSID.toUpperCase().contains(Networks.USPNET)
+							&& !wifiConfiguration.SSID.toUpperCase().contains(Networks.ICMC))
 					{
 						found = scanResultsKeys.contains(wifiConfiguration.SSID);
 					}
