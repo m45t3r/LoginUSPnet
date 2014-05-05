@@ -44,6 +44,7 @@ import android.net.wifi.WifiManager;
 import android.os.AsyncTask;
 import android.preference.PreferenceManager;
 import android.util.Log;
+import android.widget.Toast;
 import br.usp.ime.thiagoko.http.HttpUtils;
 import br.usp.ime.thiagoko.loginuspnet.Constants.Networks;
 
@@ -98,7 +99,7 @@ public class WifiChangeReceiver extends BroadcastReceiver {
 	 * @throws ClientProtocolException
 	 * @throws IOException
 	 */
-	private void sendRequest(String httpsURL, List<BasicNameValuePair> nvps, String redirURL)
+	private boolean sendRequest(String httpsURL, List<BasicNameValuePair> nvps, String redirURL)
 			throws ClientProtocolException, IOException
 	{
 
@@ -124,10 +125,11 @@ public class WifiChangeReceiver extends BroadcastReceiver {
 			// Checking response page, can be used to verify authentication
 			// success
 			if(inputLine.toLowerCase().contains(redirURL.toLowerCase())) {
-				Log.d(TAG, "Connection successful!");
-				break;
+				return true;
 			}
 		}
+
+		return false;
 	}
 
 	/**
@@ -314,6 +316,8 @@ public class WifiChangeReceiver extends BroadcastReceiver {
 	 * Do login on a separate thread to not block main thread
 	 */
 	private class loginThread extends AsyncTask<String, Void, Void> {
+		
+		private boolean mResult = false;
 
 		@Override
 		protected Void doInBackground(String... id) {
@@ -336,7 +340,7 @@ public class WifiChangeReceiver extends BroadcastReceiver {
 					nvps.add(new BasicNameValuePair("accept", "Acessar"));
 
 					try {
-						sendRequest(httpsURL.toString(), nvps, redirURL);
+						mResult = sendRequest(httpsURL.toString(), nvps, redirURL);
 					} catch (ClientProtocolException e) {
 						Log.e(TAG, "ClientProtocolException while connecting to "
 								+ id[0] + " Message: " + e.getMessage());
@@ -348,6 +352,7 @@ public class WifiChangeReceiver extends BroadcastReceiver {
 					}
 				} else {
 					Log.d(TAG, "Already authenticate to USPnet network");
+					mResult = true;
 				}
 
 			} else if (id[0].equals(Networks.ICMC)) {
@@ -366,7 +371,7 @@ public class WifiChangeReceiver extends BroadcastReceiver {
 						preferences.getString(context.getString(R.string.pref_password),"")));
 
 				try {
-					sendRequest(httpsURL, nvps, redirURL);
+					mResult = sendRequest(httpsURL, nvps, redirURL);
 				} catch (ClientProtocolException e) {
 					Log.e(TAG, "ClientProtocolException while connecting to "
 							+ id[0] + " Message: " + e.getMessage());
@@ -380,6 +385,14 @@ public class WifiChangeReceiver extends BroadcastReceiver {
 			}
 
 			return null;
+		}
+		@Override
+		protected void onPostExecute(Void result) {
+			super.onPostExecute(result);
+			if (mResult) {
+				Toast.makeText(context, context.getString(R.string.app_name) + ": " +
+						context.getString(R.string.successfulLogin), Toast.LENGTH_SHORT).show();
+			}
 		}
 	}
 

@@ -15,6 +15,7 @@
     <string name="connectionAutoSummary">Conectar automaticamente com qualquer hotspot USPnet</string>
     <string name="userSubtitle">Seu e-mail da USPnet</string>
     <string name="passwordSubtitle">Sua senha da USPnet</string>
+    <string name="successfulLogin">Autenticação bem-sucedida</string>
     
     
 </resources>
