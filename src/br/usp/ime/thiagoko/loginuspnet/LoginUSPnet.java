@@ -9,7 +9,7 @@ import android.preference.PreferenceManager;
 
 // PreferenceActivity without using fragments is deprecated for API 11+
 @SuppressWarnings("deprecation")
-public class LoginUSPNet extends PreferenceActivity implements OnSharedPreferenceChangeListener {
+public class LoginUSPnet extends PreferenceActivity implements OnSharedPreferenceChangeListener {
 
 	private EditTextPreference username = null;
 	private SharedPreferences preferences = null;
