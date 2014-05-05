@@ -188,15 +188,15 @@ public class WifiChangeReceiver extends BroadcastReceiver {
 			}
 
 		} catch (MalformedURLException e) {
-			Log.e("MalformedURLException", "Message: " + e.getMessage());
+			Log.e(TAG, "MalformedURLException, Message: " + e.getMessage());
 		} catch (SocketTimeoutException e) {
-			Log.e("SocketTimeoutException", "Message: " + e.getMessage());
+			Log.e(TAG, "SocketTimeoutException, Message: " + e.getMessage());
 		} catch (IOException e) {
-			Log.e("IOExceptionNet", "Message: " + e.getMessage());
+			Log.e(TAG, "IOException, Message: " + e.getMessage());
 		} catch (KeyManagementException e) {
-			Log.e("KeyManagementException", "Message: " + e.getMessage());
+			Log.e(TAG, "KeyManagementException, Message: " + e.getMessage());
 		} catch (NoSuchAlgorithmException e) {
-			Log.e("NoSuchAlgorithmException", "Message: " + e.getMessage());
+			Log.e(TAG, "NoSuchAlgorithmException, Message: " + e.getMessage());
 		}
 		Log.d(TAG, "USPNet's login URL: " + resultURL);
 		
@@ -205,7 +205,7 @@ public class WifiChangeReceiver extends BroadcastReceiver {
 			result = new URL(resultURL);
 		} catch (MalformedURLException e) {
 			result = null;
-			Log.e("MalformedURLException", "Message: " + e.getMessage());
+			Log.d(TAG, "Probably got wrong page. Result page: " + resultPage);
 		}
 
 		return result;
@@ -256,10 +256,11 @@ public class WifiChangeReceiver extends BroadcastReceiver {
 					// Redirection should be allowed only for HTTP and HTTPS
 					// and should be limited to 5 redirections at most.
 					if (target == null
-							|| !(target.getProtocol().equals("http") || target
-									.getProtocol().equals("https"))
-							|| redirects >= 5) {
-						throw new SecurityException("illegal URL redirect");
+							|| !(target.getProtocol().equals("http")
+							|| target.getProtocol().equals("https"))
+							|| redirects >= 5)
+					{
+						throw new SecurityException("Illegal URL redirect");
 					}
 					
 					redir = true;
