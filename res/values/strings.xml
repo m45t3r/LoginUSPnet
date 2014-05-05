@@ -3,19 +3,15 @@
 
     <string name="app_name">Login USPnet</string>
     <string name="username">E-mail</string>
-    <string name="password">Senha</string>
+    <string name="password">Password</string>
     <string name="title">USPnet Login</string>
-    <string name="buttonSave">Salvar</string>
-    <string name="buttonForceLogin">Forçar o login</string>
-    <string name="loginConfig">Configurações de login</string>
-    <string name="pref_username">pref.username</string>
-    <string name="pref_password">pref.password</string>
-    <string name="pref_connectionAutoEnable">pref.connectionAutoEnable</string>
+    <string name="buttonSave">Save</string>
+    <string name="buttonForceLogin">Force login</string>
+    <string name="loginConfig">Login configuration</string>
     <string name="connectionAutoEnable">Auto Connect</string>
-    <string name="connectionAutoSummary">Conectar automaticamente com qualquer hotspot USPnet</string>
-    <string name="userSubtitle">Seu e-mail da USPnet</string>
-    <string name="passwordSubtitle">Sua senha da USPnet</string>
-    <string name="successfulLogin">Autenticação bem-sucedida</string>
-    
+    <string name="connectionAutoSummary">Automatically connect on any USPnet hotspot</string>
+    <string name="userSubtitle">Your USPnet e-mail</string>
+    <string name="passwordSubtitle">Your USPnet password</string>
+    <string name="successfulLogin">Login successful</string>
     
 </resources>

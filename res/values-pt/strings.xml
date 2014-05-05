@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <string name="app_name">Login USPnet</string>
+    <string name="username">E-mail</string>
+    <string name="password">Senha</string>
+    <string name="title">USPnet Login</string>
+    <string name="buttonSave">Salvar</string>
+    <string name="buttonForceLogin">Forçar o login</string>
+    <string name="loginConfig">Configurações de login</string>
+    <string name="connectionAutoEnable">Conectar automaticamente</string>
+    <string name="connectionAutoSummary">Conectar automaticamente com qualquer hotspot USPnet</string>
+    <string name="userSubtitle">Seu e-mail da USPnet</string>
+    <string name="passwordSubtitle">Sua senha da USPnet</string>
+    <string name="successfulLogin">Autenticação bem-sucedida</string>
+    
+</resources>
