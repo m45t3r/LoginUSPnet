@@ -11,16 +11,16 @@ import android.preference.PreferenceManager;
 @SuppressWarnings("deprecation")
 public class LoginUSPnet extends PreferenceActivity implements OnSharedPreferenceChangeListener {
 
-	private EditTextPreference username = null;
-	private SharedPreferences preferences = null;
+	private EditTextPreference mUsername = null;
+	private SharedPreferences mPreferences = null;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		addPreferencesFromResource(R.layout.preferences);
 
-		this.preferences = PreferenceManager.getDefaultSharedPreferences(this);
-		this.username = (EditTextPreference) getPreferenceScreen()
+		mPreferences = PreferenceManager.getDefaultSharedPreferences(this);
+		mUsername = (EditTextPreference) getPreferenceScreen()
 				.findPreference(this.getString(R.string.pref_username));
 
 	}
@@ -29,8 +29,7 @@ public class LoginUSPnet extends PreferenceActivity implements OnSharedPreferenc
 	protected void onResume() {
 		super.onResume();
 
-		this.username.setSummary(this.preferences
-				.getString(this.getString(R.string.pref_username), ""));
+		mUsername.setSummary(mPreferences.getString(this.getString(R.string.pref_username), ""));
 
 		getPreferenceScreen().getSharedPreferences()
 				.registerOnSharedPreferenceChangeListener(this);
@@ -48,7 +47,7 @@ public class LoginUSPnet extends PreferenceActivity implements OnSharedPreferenc
 	public void onSharedPreferenceChanged(SharedPreferences sharedPreferences, String key) {
 
 		if (key.equals(this.getString(R.string.pref_username))) {
-			this.username.setSummary(
+			mUsername.setSummary(
 					sharedPreferences.getString(this.getString(R.string.pref_username), ""));	
 		}
 	}
