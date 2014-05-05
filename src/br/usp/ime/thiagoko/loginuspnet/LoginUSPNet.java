@@ -9,8 +9,7 @@ import android.preference.PreferenceManager;
 
 // PreferenceActivity without using fragments is deprecated for API 11+
 @SuppressWarnings("deprecation")
-public class LoginUSPNet extends PreferenceActivity implements
-		OnSharedPreferenceChangeListener {
+public class LoginUSPNet extends PreferenceActivity implements OnSharedPreferenceChangeListener {
 
 	private EditTextPreference username = null;
 	private SharedPreferences preferences = null;
@@ -30,8 +29,8 @@ public class LoginUSPNet extends PreferenceActivity implements
 	protected void onResume() {
 		super.onResume();
 
-		this.username.setSummary(this.preferences.getString(
-				this.getString(R.string.pref_username), ""));
+		this.username.setSummary(this.preferences
+				.getString(this.getString(R.string.pref_username), ""));
 
 		getPreferenceScreen().getSharedPreferences()
 				.registerOnSharedPreferenceChangeListener(this);
@@ -46,12 +45,11 @@ public class LoginUSPNet extends PreferenceActivity implements
 				.unregisterOnSharedPreferenceChangeListener(this);
 	}
 
-	public void onSharedPreferenceChanged(SharedPreferences sharedPreferences,
-			String key) {
+	public void onSharedPreferenceChanged(SharedPreferences sharedPreferences, String key) {
 
 		if (key.equals(this.getString(R.string.pref_username))) {
-			this.username.setSummary(sharedPreferences.getString(
-					this.getString(R.string.pref_username), ""));
+			this.username.setSummary(
+					sharedPreferences.getString(this.getString(R.string.pref_username), ""));	
 		}
 	}
 
