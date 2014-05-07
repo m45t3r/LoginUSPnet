@@ -13,5 +13,7 @@
     <string name="userSubtitle">Seu e-mail da USPnet</string>
     <string name="passwordSubtitle">Sua senha da USPnet</string>
     <string name="successfulLogin">Autenticação bem-sucedida</string>
+    <string name="alreadyAuthenticatedOrUnknownNetwork">Já autenticado OU rede USPnet desconhecida</string>
+    <string name="errorOnAuthentication">Erro durante a autenticação</string>
     
 </resources>

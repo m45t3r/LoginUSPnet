@@ -316,13 +316,10 @@ public class WifiChangeReceiver extends BroadcastReceiver {
 	/**
 	 * Do login on a separate thread to not block main thread
 	 */
-	private class loginThread extends AsyncTask<String, Void, Void> {
+	private class loginThread extends AsyncTask<String, Void, String> {
 		
-		private boolean mResult = false;
-
-		@Override
-		protected Void doInBackground(String... id) {
-
+		protected String doInBackground(String... id) {
+			
 			SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(context);
 			final List<BasicNameValuePair> nvps = new ArrayList<BasicNameValuePair>();
 			final String redirURL = "https://www.google.com";
@@ -341,7 +338,10 @@ public class WifiChangeReceiver extends BroadcastReceiver {
 					nvps.add(new BasicNameValuePair("accept", "Acessar"));
 
 					try {
-						mResult = sendRequest(httpsURL.toString(), nvps, redirURL);
+						boolean result = sendRequest(httpsURL.toString(), nvps, redirURL);
+						if (result) {
+							return context.getString(R.string.successfulLogin);
+						}
 					} catch (ClientProtocolException e) {
 						Log.e(TAG, "ClientProtocolException while connecting to "
 								+ id[0] + " Message: " + e.getMessage());
@@ -352,8 +352,8 @@ public class WifiChangeReceiver extends BroadcastReceiver {
 						Log.e(TAG, Log.getStackTraceString(e));
 					}
 				} else {
-					Log.d(TAG, "Already authenticate to USPnet network");
-					mResult = true;
+					Log.d(TAG, "Already authenticate to USPnet network OR unknown network");
+					return context.getString(R.string.alreadyAuthenticatedOrUnknownNetwork);
 				}
 
 			} else if (id[0].equals(Networks.ICMC)) {
@@ -372,7 +372,10 @@ public class WifiChangeReceiver extends BroadcastReceiver {
 						preferences.getString(context.getString(R.string.pref_password),"")));
 
 				try {
-					mResult = sendRequest(httpsURL, nvps, redirURL);
+					boolean result = sendRequest(httpsURL, nvps, redirURL);
+					if (result) {
+						return context.getString(R.string.successfulLogin);
+					}
 				} catch (ClientProtocolException e) {
 					Log.e(TAG, "ClientProtocolException while connecting to "
 							+ id[0] + " Message: " + e.getMessage());
@@ -385,15 +388,12 @@ public class WifiChangeReceiver extends BroadcastReceiver {
 
 			}
 
-			return null;
+			return context.getString(R.string.errorOnAuthentication);
 		}
-		@Override
-		protected void onPostExecute(Void result) {
-			super.onPostExecute(result);
-			if (mResult) {
+		
+		protected void onPostExecute(String result) {
 				Toast.makeText(context, context.getString(R.string.app_name) + ": " +
-						context.getString(R.string.successfulLogin), Toast.LENGTH_SHORT).show();
-			}
+						result, Toast.LENGTH_SHORT).show();
 		}
 	}
 
