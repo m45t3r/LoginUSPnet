@@ -1,0 +1,50 @@
+br.usp.ime.thiagoko.http.EasySSLSocketFactory -> br.usp.ime.thiagoko.a.a:
+    javax.net.ssl.SSLContext sslContext -> a
+    java.net.Socket createSocket(java.net.Socket,java.lang.String,int,boolean) -> createSocket
+    java.net.Socket createSocket() -> createSocket
+br.usp.ime.thiagoko.http.EasySSLSocketFactory$1 -> br.usp.ime.thiagoko.a.b:
+    br.usp.ime.thiagoko.http.EasySSLSocketFactory this$0 -> a
+    void checkClientTrusted(java.security.cert.X509Certificate[],java.lang.String) -> checkClientTrusted
+    void checkServerTrusted(java.security.cert.X509Certificate[],java.lang.String) -> checkServerTrusted
+    java.security.cert.X509Certificate[] getAcceptedIssuers() -> getAcceptedIssuers
+br.usp.ime.thiagoko.http.HttpUtils -> br.usp.ime.thiagoko.a.c:
+    org.apache.http.client.HttpClient getNewHttpClient() -> a
+br.usp.ime.thiagoko.loginuspnet.LoginUSPnet -> br.usp.ime.thiagoko.loginuspnet.LoginUSPnet:
+    android.preference.EditTextPreference mUsername -> a
+    android.content.SharedPreferences mPreferences -> b
+    void onCreate(android.os.Bundle) -> onCreate
+    void onResume() -> onResume
+    void onPause() -> onPause
+    void onSharedPreferenceChanged(android.content.SharedPreferences,java.lang.String) -> onSharedPreferenceChanged
+br.usp.ime.thiagoko.loginuspnet.NetworkScanReceiver -> br.usp.ime.thiagoko.loginuspnet.NetworkScanReceiver:
+    java.lang.String TAG -> a
+    long mLastCalled -> b
+    android.content.SharedPreferences mPreferences -> c
+    void onReceive(android.content.Context,android.content.Intent) -> onReceive
+    android.net.wifi.WifiConfiguration lookupConfigurationByScanResult(java.util.List,android.net.wifi.ScanResult) -> a
+    android.net.wifi.ScanResult getUspNetNetwork(android.net.wifi.WifiManager) -> a
+br.usp.ime.thiagoko.loginuspnet.OnBootReceiver -> br.usp.ime.thiagoko.loginuspnet.OnBootReceiver:
+    java.lang.String TAG -> a
+    void onReceive(android.content.Context,android.content.Intent) -> onReceive
+br.usp.ime.thiagoko.loginuspnet.WifiChangeReceiver -> br.usp.ime.thiagoko.loginuspnet.WifiChangeReceiver:
+    java.lang.String TAG -> b
+    android.content.Context context -> a
+    void onReceive(android.content.Context,android.content.Intent) -> onReceive
+    java.net.URL findPostURL() -> b
+    java.io.InputStream openConnectionCheckRedirects(java.net.URLConnection) -> a
+    java.net.URL access$0(br.usp.ime.thiagoko.loginuspnet.WifiChangeReceiver) -> a
+    boolean access$1$25a2c91(java.lang.String,java.util.List,java.lang.String) -> a
+    java.lang.String access$2() -> a
+br.usp.ime.thiagoko.loginuspnet.WifiChangeReceiver$1 -> br.usp.ime.thiagoko.loginuspnet.a:
+    br.usp.ime.thiagoko.loginuspnet.WifiChangeReceiver this$0 -> a
+    java.security.cert.X509Certificate[] getAcceptedIssuers() -> getAcceptedIssuers
+    void checkClientTrusted(java.security.cert.X509Certificate[],java.lang.String) -> checkClientTrusted
+    void checkServerTrusted(java.security.cert.X509Certificate[],java.lang.String) -> checkServerTrusted
+br.usp.ime.thiagoko.loginuspnet.WifiChangeReceiver$2 -> br.usp.ime.thiagoko.loginuspnet.b:
+    br.usp.ime.thiagoko.loginuspnet.WifiChangeReceiver this$0 -> a
+    boolean verify(java.lang.String,javax.net.ssl.SSLSession) -> verify
+br.usp.ime.thiagoko.loginuspnet.WifiChangeReceiver$loginThread -> br.usp.ime.thiagoko.loginuspnet.c:
+    br.usp.ime.thiagoko.loginuspnet.WifiChangeReceiver this$0 -> a
+    java.lang.String doInBackground(java.lang.String[]) -> a
+    void onPostExecute(java.lang.Object) -> onPostExecute
+    java.lang.Object doInBackground(java.lang.Object[]) -> doInBackground
